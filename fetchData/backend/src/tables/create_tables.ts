@@ -11,7 +11,7 @@ type FakeInformation = Document & {
   // Connect to MongoDB
   mongoose
     .connect(
-      "mongodb+srv://hesam971:1370abcd@test.0ephq.mongodb.net/?retryWrites=true&w=majority&appName=Test")
+      "")
     .then(() => {
       console.log("Connected to MongoDB!");
     })

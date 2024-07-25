@@ -66,7 +66,7 @@ app.post('/login', async (req: Request, res: Response) => {
 });
 
 // get user details
-app.get('/dashboard/:id', async (req, res) => {
+app.get('/dashboard/:id', async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.id).select('firstName');
     if (!user) {

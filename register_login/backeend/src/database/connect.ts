@@ -1,0 +1,1 @@
+export const mongoUri = 'mongodb+srv://hesam971:1234abcd@test.0ephq.mongodb.net/?retryWrites=true&w=majority&appName=Test';

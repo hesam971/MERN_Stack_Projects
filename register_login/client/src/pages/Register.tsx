@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.css';
+
 
 
 function Register () {
@@ -14,34 +14,30 @@ function Register () {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
+  
     if (!firstName || !lastName || !email || !password) {
       setError("All fields are required.");
-      return;
     }
-
+  
     if (password.length < 8) {
       setError("Password must be at least 8 characters long.");
-      return;
     }
 
-    const registerData = {
-      firstName,
-      lastName,
-      email,
-      password
-    };
-
+    const registerData = { firstName, lastName, email, password };
+  
     try {
-      const response = await axios.post('your-backend-endpoint.com', registerData);
+      const response = await axios.post('http://localhost:8080/register', registerData);
       console.log('Registration successful:', response.data);
       clearForm();
-    } catch (err) {
-      console.error('Registration error:', err);
-      setError("An error occurred during registration. Please try again.");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data.error);
+      } else {
+        setError("An error occurred during registration. Please try again.");
+      }
     }
   };
+  
 
   const clearForm = () => {
     setFirstName("");

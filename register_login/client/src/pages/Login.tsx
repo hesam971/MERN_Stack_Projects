@@ -1,35 +1,42 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!username || !password) {
+    if (!email || !password) {
       setError("All fields are required.");
-      return;
     }
 
-    const loginData = { username, password };
+    const loginData = { email, password };
 
     try {
-      const response = await axios.post('your-backend-endpoint.com', loginData);
+      const response = await axios.post('http://localhost:8080/login', loginData);
       console.log('Login successful:', response.data);
+      const userId = response.data.userId;
+      console.log(userId)
+      navigate(`/dashboard/${userId}`);
       clearForm();
-    } catch (err) {
-      console.error('Login error:', err);
-      setError("An error occurred during login. Please try again.");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data.error);
+      } else {
+        setError("An error occurred during login. Please try again.");
+      }
     }
   };
 
   const clearForm = () => {
-    setUsername("");
+    setEmail("");
     setPassword("");
   };
 
@@ -50,14 +57,14 @@ function Login() {
           )}
           <div className="mb-3">
             <label className="form-label">
-              Username <sup>*</sup>
+              Email <sup>*</sup>
             </label>
             <input
-              type="text"
+              type="email"
               className="form-control"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
             />
           </div>
           <div className="mb-3">

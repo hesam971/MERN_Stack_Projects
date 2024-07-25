@@ -23,7 +23,6 @@ function Login() {
       const response = await axios.post('http://localhost:8080/login', loginData);
       console.log('Login successful:', response.data);
       const userId = response.data.userId;
-      console.log(userId)
       navigate(`/dashboard/${userId}`);
       clearForm();
     } catch (err: unknown) {

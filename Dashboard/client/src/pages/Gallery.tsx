@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
 import axios, { AxiosResponse } from 'axios';
 import {REACT_API_PIXABAY_KEY} from '../config/PixabayApi'
+import SideBar from './SideBar'
 
 function Gallery() {
 
@@ -30,6 +31,7 @@ function Gallery() {
 
   return (
     <>
+    <SideBar/>
     <h1>
       Picture Gallery
     </h1>

@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import SideBar from './SideBar'
 
 type todoInformation = {
     id: number,
@@ -45,6 +46,7 @@ function TodoList() {
 
   return (
     <>
+    <SideBar/>
       <h1> My ToDo List </h1>
       <input type="text" value={addTodo} onChange={(e) => setAddTodo(e.target.value)} />
       <button onClick={addMoreTodo}> add ToDo </button>

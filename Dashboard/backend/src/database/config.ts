@@ -1,46 +1,42 @@
-// create_table.js
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { faker } from '@faker-js/faker';
 
-type DataPoint = {
+// MongoDB Connection String
+const URL: string = 'mongodb+srv://hesam971:123456abcd@test.0ephq.mongodb.net/?retryWrites=true&w=majority&appName=Test';
+
+// Define an interface for the line chart data structure (previously defined)
+type DataPoint = Document & {
   date: string;
   SolarPanels: number;
   Inverters: number;
 }
 
-const URL: string = 'mongodb+srv://hesam971:123456abcd@test.0ephq.mongodb.net/?retryWrites=true&w=majority&appName=Test';
-
-export const config = async (): Promise<void> => {
-  try {
-    await mongoose.connect(URL);
-    console.log('Connected!');
-
-    // Generate data points
-    const data = generateDataPoints(50);
-
-    // Save data points to the database
-    await DataPoint.insertMany(data);
-    console.log('Data has been saved successfully');
-
-    // Close the connection
-    await mongoose.connection.close();
-    console.log('Connection closed');
-  } catch (error) {
-    console.error('Connection error:', error);
-  }
-};
-  
-// Create a Mongoose schema for the data
+// Define a Mongoose schema for the line chart data (previously defined)
 const DataPointSchema: Schema = new Schema({
   date: { type: String, required: true },
   SolarPanels: { type: Number, required: true },
   Inverters: { type: Number, required: true },
 });
 
-// Create a Mongoose model for the data
+// Create a Mongoose model for the line chart data (previously defined)
 export const DataPoint: Model<DataPoint> = mongoose.model<DataPoint>('DataPoint', DataPointSchema);
 
-// Function to generate data points
+// Define an interface for the bar chart data structure
+type BarChartData = Document & {
+  name: string;
+  'Number of threatened species': number;
+}
+
+// Create a Mongoose schema for the bar chart data
+const BarChartSchema: Schema = new Schema({
+  name: { type: String, required: true },
+  'Number of threatened species': { type: Number, required: true },
+});
+
+// Create a Mongoose model for the bar chart data
+export const BarChart: Model<BarChartData> = mongoose.model<BarChartData>('BarChart', BarChartSchema);
+
+// Function to generate line chart data points (previously defined)
 function generateDataPoints(numPoints: number): DataPoint[] {
   const data: DataPoint[] = [];
   let currentDate = new Date(2022, 0); // Start in January 2022
@@ -58,28 +54,50 @@ function generateDataPoints(numPoints: number): DataPoint[] {
     });
 
     data.push(dataPoint);
-
-    // Move to the next month
     currentDate.setMonth(currentDate.getMonth() + 1);
   }
 
   return data;
 }
 
-// Connect to MongoDB and save data
+// Function to generate bar chart data
+function generateBarChartData(): BarChartData[] {
+  const categories = [
+    'Amphibians', 'Birds', 'Crustaceans', 'Ferns', 'Arachnids', 'Corals', 'Algae',
+    'Mammals', 'Reptiles', 'Fish', 'Insects', 'Molluscs', 'Plants', 'Mosses',
+    'Lichens', 'Fungi', 'Conifers', 'Bats', 'Butterflies', 'Sharks', 'Rays',
+    'Sea Turtles', 'Beetles', 'Dragonflies', 'Sea Snakes', 'Cacti', 'Orchids',
+    'Frogs', 'Salamanders', 'Ants'
+  ];
+
+  const data: BarChartData[] = categories.map((category) => {
+    return new BarChart({
+      name: category,
+      'Number of threatened species': faker.number.int({ min: 50, max: 6000 }),
+    });
+  });
+
+  return data;
+}
+
+// Function to connect to MongoDB and save data
 export async function saveData(): Promise<void> {
   try {
     // Connect to MongoDB
     await mongoose.connect(URL);
     console.log('Connected to MongoDB');
 
-    // Generate data points
-    const data = generateDataPoints(50);
+    // Generate and save line chart data points (previously defined)
+    const lineChartData = generateDataPoints(50);
+    await DataPoint.insertMany(lineChartData);
+    console.log('Line chart data has been saved successfully');
 
-    // Save data points to the database
-    await DataPoint.insertMany(data);
-    console.log('Data has been saved successfully');
+    // Generate and save bar chart data
+    const barChartData = generateBarChartData();
+    await BarChart.insertMany(barChartData);
+    console.log('Bar chart data has been saved successfully');
 
+    console.log('Connection closed');
   } catch (err) {
     console.error('Error:', err);
   }

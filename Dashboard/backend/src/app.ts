@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { saveData, DataPoint } from './database/config'; // Import the saveData function
+import { saveData, DataPoint, BarChart } from './database/config'; // Import the saveData function
 import cors from "cors";
 
 const app = express();
@@ -23,7 +23,15 @@ const fetchData = async() => {
   } catch (error) {
       console.error("Error fetching data:", error)
   }
+}
 
+const BarChartData = async() => {
+  try {
+      const BarChartData = await BarChart.find()
+      return BarChartData
+  } catch (error) {
+      console.error("Error fetching data:", error)
+  }
 }
 
 
@@ -31,6 +39,12 @@ const fetchData = async() => {
 app.get('/', async (req: Request, res: Response) => {
   const readData = await fetchData()
   res.json(readData)
+});
+
+// Define a route for the root path ('/')
+app.get('/BarChartData', async (req: Request, res: Response) => {
+  const BarData = await BarChartData()
+  res.json(BarData)
 });
 
 

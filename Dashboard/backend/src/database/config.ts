@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import { faker } from '@faker-js/faker';
 
 // MongoDB Connection String
-const URL: string = 'mongodb+srv://hesam971:123456abcd@test.0ephq.mongodb.net/?retryWrites=true&w=majority&appName=Test';
+const URL: string = '';
 
 // Define an interface for the line chart data structure (previously defined)
 type DataPoint = Document & {

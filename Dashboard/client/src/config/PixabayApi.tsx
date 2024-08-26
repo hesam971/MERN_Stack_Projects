@@ -1,1 +1,1 @@
-export const REACT_API_PIXABAY_KEY = "45384950-873bb86a02496fa588dd3991e"
+export const REACT_API_PIXABAY_KEY = ""

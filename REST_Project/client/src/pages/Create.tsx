@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios, { AxiosResponse } from 'axios';
+
 
 function create() {
   const [username, setUsername] = useState('')
@@ -18,12 +19,10 @@ function create() {
     }else{
       const newUser = { username, lastname , email }
       clearData()
-      const fetchData = async () => {
+      const sendData = async () => {
         try {
-          const response: AxiosResponse = await axios.post('http://localhost:3000/new_user', newUser);
-          const responseData = response.data;
-          console.log(responseData);
-          setUserInformation([...userInformation, response.data])
+          await axios.post('http://localhost:3000/new_user', newUser);
+
         } catch(error){
           if(error instanceof Error){
             setError(error.message)
@@ -32,7 +31,7 @@ function create() {
         
         };
 
-        fetchData();
+        sendData();
     }
 
   }
@@ -41,8 +40,8 @@ function create() {
     const fetchData = async () => {
       try {
         const response: AxiosResponse = await axios.get('http://localhost:3000/');
-        const responseData = response.data;
-        console.log(responseData);
+        const responseData = response.data.message;
+        setUserInformation(responseData)
       } catch(error){
         if(error instanceof Error){
           setError(error.message)
@@ -52,7 +51,7 @@ function create() {
       };
 
       fetchData();
-  }, [])
+  }, [addNewUser])
   
   const clearData = () => {
     setUsername('')

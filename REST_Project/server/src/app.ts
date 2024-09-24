@@ -31,14 +31,17 @@ mongoose.connect(URL).then(() => {
 
 // Define a route for the root path ('/')
 app.get('/', (req: Request, res: Response) => {
-  // Send a response to the client
-  res.send('Hello, TypeScript + Node.js + Express!');
+  // find all the users
+  User.find().then((users) => {
+    res.status(200).json({message: users})
+  }).catch((error: Error) => {
+    res.status(400).json({message: error})
+  })
 });
 
 // Define a route for the root path ('/new_user')
 app.post('/new_user', (req: Request, res: Response) => {
   const { username, lastname, email }: UserInformation = req.body
-  console.log(username + ' ' + lastname + ' ' + email)
   const user = new User({username,lastname,email})
   user.save().then(() => {
     console.log('User saved')

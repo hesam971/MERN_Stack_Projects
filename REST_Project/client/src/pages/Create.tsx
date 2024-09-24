@@ -15,16 +15,35 @@ function create() {
   const [userInformation, setUserInformation]  = useState<UserInformation[]>([])
   const [error, setError] = useState('')
 
+  const fetchData = async () => {
+    try {
+      const response: AxiosResponse = await axios.get('http://localhost:3000/');
+      const responseData = response.data.message;
+      setUserInformation(responseData)
+    } catch(error){
+      if(error instanceof Error){
+        setError(error.message)
+        }
+    }
+    
+    };
+
+  useEffect(() => {
+    fetchData();
+  }, [])
+
   const addNewUser = () => {
     if(!username || !lastname || !email){
       setError('please fill all the inputs')
     }else{
       const newUser = { username, lastname , email }
-      clearData()
       const sendData = async () => {
         try {
           await axios.post('http://localhost:3000/new_user', newUser);
 
+          clearData();
+          // call the user from database
+          fetchData();
         } catch(error){
           if(error instanceof Error){
             setError(error.message)
@@ -37,23 +56,6 @@ function create() {
     }
 
   }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response: AxiosResponse = await axios.get('http://localhost:3000/');
-        const responseData = response.data.message;
-        setUserInformation(responseData)
-      } catch(error){
-        if(error instanceof Error){
-          setError(error.message)
-          }
-      }
-      
-      };
-
-      fetchData();
-  }, [])
   
   const clearData = () => {
     setUsername('')
@@ -68,7 +70,8 @@ function create() {
   const deleteUserInformation = async (email: string) => {
     try {
       await axios.delete('http://localhost:3000/delete', { data: {email} });
-  
+      // delete user from database
+      fetchData();
     } catch(error){
       if(error instanceof Error){
         setError(error.message)

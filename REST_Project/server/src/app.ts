@@ -53,7 +53,7 @@ app.post('/new_user', (req: Request, res: Response) => {
 
 // Define a route for deleting data ('/delete')
 app.delete('/delete', (req: Request, res: Response) => {
-  const { email } = req.body
+  const { email }: Pick<UserInformation, 'email'> = req.body
   User.findOneAndDelete([email]).then(() => {
     console.log('user delete successfuly')
     res.status(201).json({message: 'user deleted'})

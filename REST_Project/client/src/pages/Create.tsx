@@ -2,15 +2,17 @@ import { useEffect, useState } from 'react'
 import axios, { AxiosResponse } from 'axios';
 
 
+type UserInformation = {
+  username: string,
+  lastname: string,
+  email: string
+}
+
 function create() {
   const [username, setUsername] = useState('')
   const [lastname, setLastname] = useState('')
   const [email, setEmail] = useState('')
-  const [userInformation, setUserInformation]  = useState([{
-    username: '',
-    lastname: '',
-    email: ''
-  }])
+  const [userInformation, setUserInformation]  = useState<UserInformation[]>([])
   const [error, setError] = useState('')
 
   const addNewUser = () => {
@@ -51,7 +53,7 @@ function create() {
       };
 
       fetchData();
-  }, [addNewUser])
+  }, [])
   
   const clearData = () => {
     setUsername('')
@@ -63,9 +65,17 @@ function create() {
     console.log('edit')
   }
 
-  const deleteUserInformation = () => {
-    console.log('delete')
-  }
+  const deleteUserInformation = async (email: string) => {
+    try {
+      await axios.delete('http://localhost:3000/delete', { data: {email} });
+  
+    } catch(error){
+      if(error instanceof Error){
+        setError(error.message)
+      }
+    }
+  };
+  
 
 
   return (
@@ -107,7 +117,7 @@ function create() {
                     {user.username? 
                     <>
                       <td><button onClick={editUserInformation}>Edit</button></td>
-                      <td><button onClick={deleteUserInformation}>Delete</button></td>
+                      <td><button onClick={() => deleteUserInformation(user.email)}>Delete</button></td>
                     </> : null}
                   </tr>
                 )

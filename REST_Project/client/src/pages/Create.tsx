@@ -12,8 +12,8 @@ function create() {
   const [username, setUsername] = useState('')
   const [lastname, setLastname] = useState('')
   const [email, setEmail] = useState('')
-  const [edit, setEdit] = useState('')
   const [userInformation, setUserInformation]  = useState<UserInformation[]>([])
+  const [edit, setEdit] = useState('')
   const [error, setError] = useState('')
 
   const fetchData = async () => {
@@ -45,6 +45,7 @@ function create() {
           clearData();
           // call the user from database
           fetchData();
+          // make edit tab for user invisible
           setEdit('')
         } catch(error){
           if(error instanceof Error){
@@ -68,17 +69,15 @@ function create() {
   const editUserInformation = async (email: string) => {
     try {
       const editUer = {email}
-      await axios.put('http://localhost:3000/edit', editUer);
-      // delete user from database
-      // fetchData();
+      const response: AxiosResponse = await axios.put('http://localhost:3000/edit', editUer);
+      console.log(response.data.message)
+      setEdit(response.data.message)
     } catch(error){
       if(error instanceof Error){
         setError(error.message)
       }
     }
 
-    console.log(email)
-    setEdit('user want to edit')
   }
 
   const deleteUserInformation = async (email: string) => {
@@ -142,24 +141,25 @@ function create() {
             </tbody>
           </table>
 
-              {edit? 
+          {edit ? (
                   <div>
-                    <h1> Edit the user </h1>
-                      {error? error : ' '}
-                    <br />
-                    <label htmlFor="">First Name: </label>
-                      <input type="text" value={username} onChange={(prev) => setUsername(prev.target.value)} />
-                    <br />
-                    <label htmlFor="">Last Name: </label>
-                      <input type="text" value={lastname} onChange={(prev) => setLastname(prev.target.value)} />
-                    <br />
-                    <label htmlFor="">Email: </label>
-                      <input type="email" value={email} onChange={(prev) => setEmail(prev.target.value)} />
-                    <br />
-                    <button onClick={addNewUser}>Add newone</button>
-                  </div>
-
-                      : '' }
+                  <h1> Edit the user </h1>
+                    {error? error : ' '}
+                  <br />
+                      <>
+                        <label htmlFor="">First Name: </label>
+                        <input type="text" value={username} onChange={(prev) => setUsername(prev.target.value)} />
+                        <br />
+                        <label htmlFor="">Last Name: </label>
+                        <input type="text" value={lastname} onChange={(prev) => setLastname(prev.target.value)} />
+                        <br />
+                        <label htmlFor="">Email: </label>
+                        <input type="email" value={email} onChange={(prev) => setEmail(prev.target.value)} />
+                        <br />
+                        <button onClick={addNewUser}>Edit</button>
+                      </>
+                </div>
+          ): null}
 
         </div>
 

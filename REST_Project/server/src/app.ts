@@ -51,6 +51,18 @@ app.post('/new_user', (req: Request, res: Response) => {
   })
 });
 
+// Define a route for Edit data ('/edit')
+app.put('/edit', (req: Request, res: Response) => {
+  const { email }: Pick<UserInformation, 'email'> = req.body
+  console.log(email)
+  User.findOne({email}).then((user) => {
+    console.log(user)
+    res.status(200).json({message: 'user founded'})
+  }).catch((error: Error) => {
+    res.status(400).json({message: error})
+  })
+});
+
 // Define a route for deleting data ('/delete')
 app.delete('/delete', (req: Request, res: Response) => {
   const { email }: Pick<UserInformation, 'email'> = req.body
